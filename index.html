@@ -237,6 +237,10 @@
 	  		}
     </style>
 
+	<link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet" />
+	<script src="https://unpkg.com/video.js/dist/video.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   </head>
 <body id="article">
 	<p id="keywords" > 
@@ -251,28 +255,7 @@
       </div>
 	  
 	  <div class="list" id="list-wrap" style="display: flex">
-		  <a href="https://live1.dktq4q.com/live/61514752_cf77a1a507c4dd85f535494d5076eed5_h1080p.m3u8" target="_blank">
-            <div class="text">
-              <div class="btnTitle" style="color:yellow">001直播视频</div>
-              <div class="btnLink">哈卡 vs 奥卢</div>
-        </div>
-		</a>
-
-			
-			<a href="https://baidu.com" target="_blank">
-            <div class="text">
-              <div class="btnTitle" style="color:yellow">002直播视频</div>
-              <div class="btnLink">比勒菲尔德 vs 菲尔特</div>
-            </div>
-			 </a>
-
-		
-		<div class="email-box" style="color:#00ff00">
-				<h3 >
-				↓ 看更多赛事直播请联系老师 ↓
-				</h3>
-		</div>		
-
+	
 			<a href="https://tool.gljlw.com/qq/?qq=2867168579" target="_blank">
             <div class="text">	
               <div class="btnTitle" style="color:yellow">点击领取更多赛事直播</div>
@@ -288,12 +271,19 @@
 			  </a>
 	</div>	
 	
-	<div class="contact" id="contactList">
-	  <!--  <a href="https://www.wwtalk.com/" target="_blank"><img alt="" src="https://95zhibo.pages.dev/static/images/wang.png"><span>老师旺商聊</span></a>
-	    <a href="https://ya.cn" target="_blank"><img alt="" src="https://95zhibo.pages.dev/static/images/si.png"><span>AG112</span></a>  -->
-	    <a href="https://tool.gljlw.com/qq/?qq=2867168579" target="_blank"><img alt="" src="https://95zhibo.pages.dev/static/images/QQ.png"><span>QQ详聊</span></a>
-	    <a href="https://t.me/dayu98" target="_blank"><img alt="" src="https://95zhibo.pages.dev/static/images/TG.png"><span>TG畅聊</span></a>
-	</div>
+	<video id="video" class="video-js vjs-default-skin" controls preload="auto" width="400" height="260">
+	  <source src="https://live1.dktq4q.com/live/61514752_cf77a1a507c4dd85f535494d5076eed5_h1080p.m3u8" type="application/x-mpegURL">
+	</video>
+	<script>
+	  var player = videojs('video');
+	  player.ready(function(){
+	    this.hls.attachMedia(player);
+	    this.hls.on(videojs.HlsHandler.Events.MEDIA_ATTACHED, function() {
+	      this.hls.startLoad();
+	    });
+	  });
+	</script>
+
 	
 <div class="wz-box">		
 		<h2>9.19主任赛事推荐</h2>
@@ -328,7 +318,6 @@
 	    <div class="notify" >【截图保存】自助上车补单永久域名【N5B.CC】</div>
   </body>
 </html>
-
 
 
 
