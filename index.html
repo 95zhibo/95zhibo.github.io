@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M3U8视频播放器</title>
+    <title>LiveStream - 专业直播平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -14,65 +14,156 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
+        :root {
+            --primary: #4a9eff;
+            --primary-dark: #3a7fd8;
+            --secondary: #6c63ff;
+            --dark-bg: #0f1419;
+            --card-bg: #1a2332;
+            --text-primary: #e0e0e0;
+            --text-secondary: #8a94a6;
+            --border-color: #2a3a52;
+        }
+        
         body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 20px;
         }
         
+        /* 头部样式 */
         header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--dark-bg) 100%);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff8a00, #e52e71);
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 15px;
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
         }
         
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+        
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-login {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-login:hover {
+            background: rgba(74, 158, 255, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-register {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-register:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+        }
+        
+        /* 主要内容区域 */
         .main-content {
             display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            margin-bottom: 30px;
+            gap: 20px;
+            margin-top: 30px;
         }
         
-        .player-section {
-            flex: 2;
-            min-width: 300px;
-        }
-        
-        .player-container {
-            background: #000;
-            border-radius: 15px;
+        /* 视频播放器区域 */
+        .video-section {
+            flex: 3;
+            background: var(--card-bg);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            position: relative;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
-        #videoPlayer {
+        .video-container {
+            width: 100%;
+            position: relative;
+            padding-top: 56.25%; /* 16:9 宽高比 */
+            background-color: #000;
+        }
+        
+        #video-player {
             position: absolute;
             top: 0;
             left: 0;
@@ -81,179 +172,31 @@
             background: #000;
         }
         
-        .player-controls {
+        .video-controls {
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
-        }
-        
-        .control-group {
-            display: flex;
-            gap: 10px;
             align-items: center;
+            background: rgba(26, 35, 50, 0.9);
         }
         
-        .progress-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            height: 8px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            cursor: pointer;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #ff8a00, #e52e71);
-            border-radius: 4px;
-            width: 0%;
-            position: relative;
-        }
-        
-        .time-display {
+        .control-left, .control-right {
             display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 15px;
+            align-items: center;
+            gap: 15px;
         }
         
-        .url-input-section {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        input[type="text"] {
-            flex: 1;
-            padding: 12px 15px;
+        .control-btn {
+            background: transparent;
             border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-        }
-        
-        input[type="text"]::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .sidebar {
-            flex: 1;
-            min-width: 280px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .section-title i {
-            color: #ff8a00;
-        }
-        
-        .channel-list, .history-list {
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        
-        .channel-list::-webkit-scrollbar, .history-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .channel-list::-webkit-scrollbar-track, .history-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        
-        .channel-list::-webkit-scrollbar-thumb, .history-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 138, 0, 0.7);
-            border-radius: 10px;
-        }
-        
-        .channel-item, .history-item {
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 18px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: color 0.3s;
         }
         
-        .channel-item:hover, .history-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-        
-        .channel-item.active {
-            background: rgba(255, 138, 0, 0.3);
-            border-left: 4px solid #ff8a00;
-        }
-        
-        .channel-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .channel-url {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #ff8a00, #e52e71);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 138, 0, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(-1px);
-        }
-        
-        button:disabled {
-            background: #666;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .control-btn:hover {
+            color: var(--primary);
         }
         
         .volume-control {
@@ -265,527 +208,596 @@
         .volume-slider {
             width: 80px;
             -webkit-appearance: none;
-            height: 5px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border-color);
             outline: none;
         }
         
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background: #ff8a00;
+            background: var(--primary);
             cursor: pointer;
         }
         
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            margin-top: 20px;
+        .video-info {
+            padding: 20px;
         }
         
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #ff8a00;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+        .video-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: white;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .video-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 15px;
         }
         
-        .status-bar {
-            margin-top: 15px;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            font-size: 0.9rem;
+        .video-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .channels-section, .playlist-section {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: white;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         
-        .quality-selector {
+        .section-title span {
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .channel-list, .playlist {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .channel-item, .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .channel-item:hover, .playlist-item:hover {
+            background: rgba(74, 158, 255, 0.1);
+        }
+        
+        .channel-item.active, .playlist-item.active {
+            background: rgba(74, 158, 255, 0.2);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .channel-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .channel-info {
+            flex: 1;
+        }
+        
+        .channel-name {
+            font-weight: 500;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .channel-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: #ff4757;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .viewer-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* 底部区域 */
+        footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
             margin-top: 15px;
         }
         
-        .quality-option {
-            padding: 5px 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
+        .social-links a {
+            color: var(--text-secondary);
+            font-size: 20px;
+            transition: color 0.3s;
         }
         
-        .quality-option.active {
-            background: rgba(255, 138, 0, 0.7);
+        .social-links a:hover {
+            color: var(--primary);
         }
         
-        footer {
+        .copyright {
             text-align: center;
-            padding: 20px;
             margin-top: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            opacity: 0.8;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
         }
         
-        @media (max-width: 768px) {
+        /* 响应式设计 */
+        @media (max-width: 992px) {
             .main-content {
                 flex-direction: column;
             }
             
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .player-controls {
+            .header-content {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
             
-            .control-group {
+            nav ul {
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .video-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .control-left, .control-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
                 justify-content: center;
-            }
-            
-            .input-group {
-                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-play-circle"></i> M3U8视频播放器</h1>
-            <p class="subtitle">在线播放M3U8格式视频流，支持直播和点播</p>
-        </header>
-        
-        <div class="main-content">
-            <div class="player-section">
-                <div class="player-container">
-                    <video id="videoPlayer" controls playsinline>
-                        您的浏览器不支持HTML5视频播放
-                    </video>
+    <!-- 头部 -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-satellite-dish"></i>
+                    <h1>LiveStream</h1>
                 </div>
-                
-                <div class="progress-container" id="progressContainer">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
-                
-                <div class="time-display">
-                    <span id="currentTime">00:00</span>
-                    <span id="duration">00:00</span>
-                </div>
-                
-                <div class="player-controls">
-                    <div class="control-group">
-                        <button id="playBtn"><i class="fas fa-play"></i> 播放</button>
-                        <button id="pauseBtn"><i class="fas fa-pause"></i> 暂停</button>
-                        <button id="muteBtn"><i class="fas fa-volume-up"></i> 静音</button>
-                        <div class="volume-control">
-                            <i class="fas fa-volume-down"></i>
-                            <input type="range" min="0" max="1" step="0.1" value="1" class="volume-slider" id="volumeSlider">
-                            <i class="fas fa-volume-up"></i>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <button id="fullscreenBtn"><i class="fas fa-expand"></i> 全屏</button>
-                        <button id="reloadBtn"><i class="fas fa-sync-alt"></i> 刷新</button>
-                    </div>
-                </div>
-                
-                <div class="url-input-section">
-                    <h3 class="section-title"><i class="fas fa-link"></i> 输入M3U8链接</h3>
-                    <div class="input-group">
-                        <input type="text" id="urlInput" placeholder="请输入M3U8视频链接...">
-                        <button id="loadUrlBtn"><i class="fas fa-download"></i> 加载</button>
-                    </div>
-                    <p>或者从下面的示例中选择一个视频源</p>
-                </div>
-                
-                <div class="status-bar">
-                    <span id="statusText">准备就绪</span>
-                    <span id="videoInfo">未加载视频</span>
-                </div>
-                
-                <div class="loading" id="loadingIndicator">
-                    <div class="spinner"></div>
-                    <p>正在加载视频，请稍候...</p>
-                </div>
-            </div>
-            
-            <div class="sidebar">
-                <div class="section">
-                    <h3 class="section-title"><i class="fas fa-list"></i> 示例视频源</h3>
-                    <div class="channel-list" id="channelList">
-                        <!-- 频道列表将通过JavaScript动态生成 -->
-                    </div>
-                </div>
-                
-                <div class="section" style="margin-top: 30px;">
-                    <h3 class="section-title"><i class="fas fa-history"></i> 播放历史</h3>
-                    <div class="history-list" id="historyList">
-                        <!-- 历史记录将通过JavaScript动态生成 -->
-                    </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">首页</a></li>
+                        <li><a href="#">直播</a></li>
+                        <li><a href="#">频道</a></li>
+                        <li><a href="#">分类</a></li>
+                        <li><a href="#">热门</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <button class="btn btn-login">登录</button>
+                    <button class="btn btn-register">注册</button>
                 </div>
             </div>
         </div>
-        
-        <footer>
-            <p>M3U8视频播放器 &copy; 2023 | 使用hls.js技术 | 仅供演示使用</p>
-        </footer>
-    </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="container">
+        <div class="main-content">
+            <!-- 视频播放区域 -->
+            <section class="video-section">
+                <div class="video-container">
+                    <video id="video-player" controls></video>
+                </div>
+                <div class="video-controls">
+                    <div class="control-left">
+                        <button class="control-btn" id="play-pause">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="control-btn" id="mute">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <div class="volume-control">
+                            <input type="range" class="volume-slider" id="volume" min="0" max="1" step="0.1" value="1">
+                        </div>
+                    </div>
+                    <div class="control-right">
+                        <button class="control-btn" id="fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="control-btn">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h2 class="video-title">科技频道直播 - 最新产品发布会</h2>
+                    <div class="video-meta">
+                        <span><i class="far fa-eye"></i> 12,584 观看</span>
+                        <span><i class="far fa-heart"></i> 2,341 喜欢</span>
+                        <span><i class="far fa-clock"></i> 直播中 - 3:24:15</span>
+                    </div>
+                    <p class="video-description">
+                        欢迎来到科技频道直播！今天我们为大家带来最新产品发布会现场直播。本次发布会将展示多款创新产品和技术突破，包括智能家居设备、可穿戴技术和人工智能应用等。
+                    </p>
+                </div>
+            </section>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <section class="channels-section">
+                    <h3 class="section-title">
+                        直播频道
+                        <span>全部 <i class="fas fa-chevron-right"></i></span>
+                    </h3>
+                    <div class="channel-list">
+                        <div class="channel-item active" data-stream="https://play.livewithhy.com/live/sd-6MvXMfc5qFmVpuAU7P.m3u8?txSecret=161116ecd86a17d2a9f91943de066ab4&txTime=68DD30B2">
+                            <div class="channel-logo">TC</div>
+                            <div class="channel-info">
+                                <div class="channel-name">英超</div>
+                                <div class="channel-status">
+                                    <span class="live-indicator"></span>
+                                    直播中 - 切尔西
+                                </div>
+                            </div>
+                            <div class="viewer-count">12.5K</div>
+                        </div>
+                        <div class="channel-item" data-stream="https://spgdctyunct.inter.71edge.com/tslive/l1/c69_ssports_20251001_nkspoe1g_720p_chst1_ts_t4/XH-o4Wd8NcC2Im5QMeGAlJ8X1TqhimSAnS9sl_9ex1XremccCaGJjgJN1-thd7wM-kwfFOT-fdvZZWYFzKYgev3mMSMkepbrr6a01xm6VGApswtz3FKhTP7NN8QmuKTL-hUO3OjuBsonrdK_X6AcHwR0Rpyy7GbYK1QHFfp1EH71io76fZYUoDbmwPU2Ho_4c6CXkuBqo9M7uIzK22cI7zPv6EoDygvF-da54pMKmTih3lejdOP54Dje7pQiWGNKy7I4QMmZF63YnUNLP6RT8g/121cb0212e707323cbde35031af2607dc/c69_ssports_20251001_nkspoe1g_720p_chst1_ts_t4.m3u8?key=098581b4997fcc258df7516061908de7f&dis_t=1759258681&uuid=75481168-1999bfd2050-3f0&qdpv=3&qd_bid=4&qd_sft=0&mss=1&pv=0.1&cpt=0">
+                            <div class="channel-logo">GC</div>
+                            <div class="channel-info">
+                                <div class="channel-name">西甲</div>
+                                <div class="channel-status">
+                                    <span class="live-indicator"></span>
+                                    直播中 - 马竞
+                                </div>
+                            </div>
+                            <div class="viewer-count">8.2K</div>
+                        </div>
+                        <div class="channel-item" data-stream="https://play.livewithhy.com/live/hd-zh-6MvXMfc49g59hWqe8m.m3u8?txSecret=16d9c9dd8ee55b546d37a9c8a86e8f02&txTime=68DD30DB">
+                            <div class="channel-logo">MC</div>
+                            <div class="channel-info">
+                                <div class="channel-name">西甲</div>
+                                <div class="channel-status">
+                                    <span class="live-indicator"></span>
+                                    直播中 - 拜仁
+                                </div>
+                            </div>
+                            <div class="viewer-count">15.7K</div>
+                        </div>
+                        <div class="channel-item" data-stream="https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8">
+                            <div class="channel-logo">SC</div>
+                            <div class="channel-info">
+                                <div class="channel-name">体育频道</div>
+                                <div class="channel-status">
+                                    <span class="live-indicator"></span>
+                                    直播中 - 足球联赛
+                                </div>
+                            </div>
+                            <div class="viewer-count">22.3K</div>
+                        </div>
+                        <div class="channel-item" data-stream="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">
+                            <div class="channel-logo">EC</div>
+                            <div class="channel-info">
+                                <div class="channel-name">教育频道</div>
+                                <div class="channel-status">
+                                    <span class="live-indicator"></span>
+                                    直播中 - 编程教学
+                                </div>
+                            </div>
+                            <div class="viewer-count">5.1K</div>
+                        </div>
+                    </div>
+                </section>
+
+ <!--               <section class="playlist-section">
+                    <h3 class="section-title">
+                        播放列表
+                        <span>全部 <i class="fas fa-chevron-right"></i></span>
+                    </h3>
+                    <div class="playlist">
+                        <div class="playlist-item active">
+                            <i class="fas fa-play-circle"></i>
+                            <div>科技频道直播 - 产品发布会</div>
+                        </div>
+                        <div class="playlist-item">
+                            <i class="fas fa-play-circle"></i>
+                            <div>游戏频道 - 新游戏试玩</div>
+                        </div>
+                        <div class="playlist-item">
+                            <i class="fas fa-play-circle"></i>
+                            <div>音乐频道 - 线上演唱会</div>
+                        </div>
+                        <div class="playlist-item">
+                            <i class="fas fa-play-circle"></i>
+                            <div>体育频道 - 足球联赛</div>
+                        </div>
+                        <div class="playlist-item">
+                            <i class="fas fa-play-circle"></i>
+                            <div>教育频道 - 编程教学</div>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </div>  -->
+
+    <!-- 底部 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <p style="color: var(--text-secondary);">LiveStream 是一个专业的直播视频平台，提供高质量、多领域的直播内容，让用户随时随地享受精彩的直播体验。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+ <!--               <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">直播频道</a></li>
+                        <li><a href="#">热门内容</a></li>
+                        <li><a href="#">分类浏览</a></li>
+                        <li><a href="#">帮助中心</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">客服支持</a></li>
+                        <li><a href="#">商务合作</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">加入我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>法律信息</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">服务条款</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">版权声明</a></li>
+                        <li><a href="#">社区准则</a></li>
+                    </ul>
+                </div>
+            </div>  -->
+            <div class="copyright">
+                &copy; 2023 LiveStream 直播平台. 保留所有权利.
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // 示例M3U8视频源
-        const channels = [
-            {
-                name: "英超",
-                url: "https://play.livewithhy.com/live/hd-zh-6MvXMfc5KanFMFHu1P.m3u8?txSecret=00cc9e0a2d8d393123c38f7f445fcae6&txTime=68DD1411",
-                type: "点播"
-            },
-            {
-                name: "西甲",
-                url: "https://bf.njscwh.com/live/sd-1-4358348.m3u8?txSecret=dd98ef77458ef85b61dfaffe1a4c89cd&txTime=68dc1e12",
-                type: "点播"
-            },
-            {
-                name: "CCTV-1 综合",
-                url: "https://cctvcnch5c.v.wscdns.com/live/cctv1_2/index.m3u8",
-                type: "直播"
-            },
-            {
-                name: "CCTV-5 体育",
-                url: "https://cctvcnch5c.v.wscdns.com/live/cctv5_2/index.m3u8",
-                type: "直播"
-            },
-            {
-                name: "测试直播流",
-                url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-                type: "直播"
-            }
-        ];
-
-        // 获取DOM元素
-        const videoPlayer = document.getElementById('videoPlayer');
-        const channelList = document.getElementById('channelList');
-        const historyList = document.getElementById('historyList');
-        const playBtn = document.getElementById('playBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const muteBtn = document.getElementById('muteBtn');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const reloadBtn = document.getElementById('reloadBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const urlInput = document.getElementById('urlInput');
-        const loadUrlBtn = document.getElementById('loadUrlBtn');
-        const statusText = document.getElementById('statusText');
-        const videoInfo = document.getElementById('videoInfo');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressBar = document.getElementById('progressBar');
-        const currentTime = document.getElementById('currentTime');
-        const duration = document.getElementById('duration');
-
-        // HLS.js实例
-        let hls;
-        let playbackHistory = [];
-        let currentChannelIndex = 0;
-
-        // 初始化频道列表
-        function initChannelList() {
-            channels.forEach((channel, index) => {
-                const channelItem = document.createElement('div');
-                channelItem.className = 'channel-item';
-                
-                channelItem.innerHTML = `
-                    <div class="channel-name">${channel.name}</div>
-                    <div class="channel-url">${channel.url}</div>
-                    <div style="font-size: 0.7rem; margin-top: 5px; color: #ff8a00;">${channel.type}</div>
-                `;
-                
-                channelItem.addEventListener('click', () => {
-                    loadVideo(channel.url, channel.name);
-                    currentChannelIndex = index;
-                    updateActiveChannel();
-                });
-                
-                channelList.appendChild(channelItem);
-            });
-        }
-
-        // 更新活动频道样式
-        function updateActiveChannel() {
-            document.querySelectorAll('.channel-item').forEach((item, index) => {
-                if (index === currentChannelIndex) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-
-        // 加载视频
-        function loadVideo(url, name = '自定义视频') {
-            // 显示加载指示器
-            loadingIndicator.style.display = 'block';
-            statusText.textContent = '正在加载视频...';
+        // 初始化视频播放器
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoPlayer = document.getElementById('video-player');
+            const playPauseBtn = document.getElementById('play-pause');
+            const muteBtn = document.getElementById('mute');
+            const volumeSlider = document.getElementById('volume');
+            const fullscreenBtn = document.getElementById('fullscreen');
             
-            // 停止当前播放
-            if (hls) {
-                hls.destroy();
-            }
-            
-            // 重置视频元素
-            videoPlayer.src = '';
-            
-            // 检查浏览器是否原生支持HLS
-            if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                // 原生支持HLS (Safari)
-                videoPlayer.src = url;
-                statusText.textContent = '使用原生HLS支持';
-            } else if (Hls.isSupported()) {
-                // 使用hls.js
-                hls = new Hls({
-                    enableWorker: false,
-                    lowLatencyMode: true,
-                    backBufferLength: 90
-                });
-                
-                hls.loadSource(url);
-                hls.attachMedia(videoPlayer);
-                
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    statusText.textContent = '视频加载完成';
-                    loadingIndicator.style.display = 'none';
+            // 播放/暂停控制
+            playPauseBtn.addEventListener('click', function() {
+                if (videoPlayer.paused) {
                     videoPlayer.play();
-                    
-                    // 添加到播放历史
-                    addToHistory(url, name);
-                    
-                    // 更新视频信息
-                    videoInfo.textContent = name;
-                });
-                
-                hls.on(Hls.Events.ERROR, function(event, data) {
-                    console.error('HLS错误:', data);
-                    if (data.fatal) {
-                        switch(data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                statusText.textContent = '网络错误，尝试重新加载...';
-                                hls.startLoad();
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                statusText.textContent = '媒体错误，尝试恢复...';
-                                hls.recoverMediaError();
-                                break;
-                            default:
-                                statusText.textContent = '无法恢复的错误，请尝试其他视频源';
-                                loadingIndicator.style.display = 'none';
-                                hls.destroy();
-                                break;
-                        }
-                    }
-                });
-            } else {
-                statusText.textContent = '您的浏览器不支持播放M3U8视频';
-                loadingIndicator.style.display = 'none';
-            }
-            
-            // 视频事件监听
-            videoPlayer.addEventListener('loadedmetadata', function() {
-                duration.textContent = formatTime(videoPlayer.duration);
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                } else {
+                    videoPlayer.pause();
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
             });
             
-            videoPlayer.addEventListener('waiting', function() {
-                statusText.textContent = '视频缓冲中...';
-                loadingIndicator.style.display = 'block';
-            });
-            
-            videoPlayer.addEventListener('playing', function() {
-                statusText.textContent = '正在播放';
-                loadingIndicator.style.display = 'none';
-            });
-            
-            videoPlayer.addEventListener('error', function() {
-                statusText.textContent = '播放错误，请尝试其他视频源';
-                loadingIndicator.style.display = 'none';
-            });
-        }
-
-        // 添加到播放历史
-        function addToHistory(url, name) {
-            // 检查是否已存在
-            const existingIndex = playbackHistory.findIndex(item => item.url === url);
-            if (existingIndex !== -1) {
-                playbackHistory.splice(existingIndex, 1);
-            }
-            
-            // 添加到历史记录
-            playbackHistory.unshift({
-                url: url,
-                name: name,
-                time: new Date().toLocaleTimeString()
-            });
-            
-            // 限制历史记录数量
-            if (playbackHistory.length > 5) {
-                playbackHistory.pop();
-            }
-            
-            // 更新历史记录显示
-            updateHistoryList();
-        }
-
-        // 更新历史记录列表
-        function updateHistoryList() {
-            historyList.innerHTML = '';
-            
-            playbackHistory.forEach((item, index) => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                
-                historyItem.innerHTML = `
-                    <div class="channel-name">${item.name}</div>
-                    <div class="channel-url">${item.url}</div>
-                    <div style="font-size: 0.7rem; margin-top: 5px; color: #aaa;">${item.time}</div>
-                `;
-                
-                historyItem.addEventListener('click', () => {
-                    loadVideo(item.url, item.name);
-                    currentChannelIndex = -1; // 自定义URL，不在频道列表中
-                    updateActiveChannel();
-                });
-                
-                historyList.appendChild(historyItem);
-            });
-        }
-
-        // 格式化时间
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return '00:00';
-            
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // 更新进度条
-        function updateProgress() {
-            if (videoPlayer.duration) {
-                const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-                progressBar.style.width = `${percent}%`;
-                currentTime.textContent = formatTime(videoPlayer.currentTime);
-            }
-        }
-
-        // 跳转到指定进度
-        function seekToPosition(e) {
-            if (!videoPlayer.duration) return;
-            
-            const rect = progressContainer.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            videoPlayer.currentTime = percent * videoPlayer.duration;
-        }
-
-        // 初始化
-        function init() {
-            // 初始化频道列表
-            initChannelList();
-            
-            // 默认加载第一个频道
-            loadVideo(channels[0].url, channels[0].name);
-            updateActiveChannel();
-            
-            // 播放器控制事件
-            playBtn.addEventListener('click', () => {
-                videoPlayer.play();
-            });
-            
-            pauseBtn.addEventListener('click', () => {
-                videoPlayer.pause();
-            });
-            
-            muteBtn.addEventListener('click', () => {
+            // 静音控制
+            muteBtn.addEventListener('click', function() {
                 videoPlayer.muted = !videoPlayer.muted;
-                muteBtn.innerHTML = videoPlayer.muted ? 
-                    '<i class="fas fa-volume-mute"></i> 取消静音' : 
-                    '<i class="fas fa-volume-up"></i> 静音';
+                if (videoPlayer.muted) {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
             });
             
-            volumeSlider.addEventListener('input', () => {
+            // 音量控制
+            volumeSlider.addEventListener('input', function() {
                 videoPlayer.volume = volumeSlider.value;
-            });
-            
-            fullscreenBtn.addEventListener('click', () => {
-                if (videoPlayer.requestFullscreen) {
-                    videoPlayer.requestFullscreen();
-                } else if (videoPlayer.mozRequestFullScreen) {
-                    videoPlayer.mozRequestFullScreen();
-                } else if (videoPlayer.webkitRequestFullscreen) {
-                    videoPlayer.webkitRequestFullscreen();
-                } else if (videoPlayer.msRequestFullscreen) {
-                    videoPlayer.msRequestFullscreen();
+                if (videoPlayer.volume == 0) {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                 }
             });
             
-            reloadBtn.addEventListener('click', () => {
-                if (videoPlayer.src) {
-                    loadingIndicator.style.display = 'block';
-                    statusText.textContent = '重新加载视频...';
-                    videoPlayer.src = videoPlayer.src;
-                    setTimeout(() => {
-                        videoPlayer.play();
-                    }, 500);
-                }
-            });
-            
-            // 自定义URL加载
-            loadUrlBtn.addEventListener('click', () => {
-                const url = urlInput.value.trim();
-                if (url) {
-                    if (url.endsWith('.m3u8')) {
-                        loadVideo(url, '自定义视频');
-                        currentChannelIndex = -1; // 自定义URL，不在频道列表中
-                        updateActiveChannel();
-                    } else {
-                        statusText.textContent = '请输入有效的M3U8链接';
+            // 全屏控制
+            fullscreenBtn.addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    if (videoPlayer.requestFullscreen) {
+                        videoPlayer.requestFullscreen();
+                    } else if (videoPlayer.mozRequestFullScreen) {
+                        videoPlayer.mozRequestFullScreen();
+                    } else if (videoPlayer.webkitRequestFullscreen) {
+                        videoPlayer.webkitRequestFullscreen();
+                    } else if (videoPlayer.msRequestFullscreen) {
+                        videoPlayer.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
                     }
                 }
             });
             
-            // 进度条控制
-            progressContainer.addEventListener('click', seekToPosition);
-            
-            // 视频时间更新
-            videoPlayer.addEventListener('timeupdate', updateProgress);
-            
-            // 允许按Enter键加载URL
-            urlInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    loadUrlBtn.click();
-                }
+            // 视频播放状态变化
+            videoPlayer.addEventListener('play', function() {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
             });
-        }
-
-        // 页面加载完成后初始化
-        window.addEventListener('DOMContentLoaded', init);
+            
+            videoPlayer.addEventListener('pause', function() {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            // 加载初始直播源
+            loadStream("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8");
+            
+            // 频道切换功能
+            const channelItems = document.querySelectorAll('.channel-item');
+            channelItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有频道的active类
+                    channelItems.forEach(channel => {
+                        channel.classList.remove('active');
+                    });
+                    // 为当前频道添加active类
+                    this.classList.add('active');
+                    
+                    // 更新视频标题
+                    const channelName = this.querySelector('.channel-name').textContent;
+                    const channelStatus = this.querySelector('.channel-status').textContent;
+                    document.querySelector('.video-title').textContent = `${channelName} - ${channelStatus}`;
+                    
+                    // 加载对应频道的直播源
+                    const streamUrl = this.getAttribute('data-stream');
+                    loadStream(streamUrl);
+                });
+            });
+            
+            // 加载直播流
+            function loadStream(url) {
+                // 暂停当前播放
+                videoPlayer.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                
+                // 显示加载状态
+                videoPlayer.innerHTML = '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;text-align:center;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>正在加载直播流...</p></div>';
+                
+                // 如果浏览器支持HLS.js，则使用它来处理HLS流
+                if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(videoPlayer);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        videoPlayer.play();
+                        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    });
+                } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                    // 原生支持HLS的浏览器（如Safari）
+                    videoPlayer.src = url;
+                    videoPlayer.addEventListener('loadedmetadata', function() {
+                        videoPlayer.play();
+                        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    });
+                } else {
+                    alert('您的浏览器不支持播放此直播流');
+                }
+            }
+        });
     </script>
 </body>
 </html>
-
